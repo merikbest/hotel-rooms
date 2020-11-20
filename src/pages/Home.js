@@ -3,6 +3,7 @@ import Hero from "../components/Hero";
 import Banner from "../components/Banner";
 import {Link} from "react-router-dom";
 import Services from "../components/Services";
+import FeaturedRooms from "../components/FeaturedRooms";
 
 // rsf
 function Home(props) {
@@ -14,6 +15,7 @@ function Home(props) {
             </Banner>
         </Hero>
             <Services/>
+            <FeaturedRooms/>
         </>
     );
 }

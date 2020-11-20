@@ -1,13 +1,58 @@
 import React, {Component} from 'react';
+import items from "./data"
 
+// Контекст позволяет передавать данные через дерево компонентов без необходимости передавать пропсы на промежуточных уровнях.
+// Контекст позволяет передавать значение глубоко
+// в дерево компонентов без явной передачи пропсов
+// на каждом уровне.
 const RoomContext = React.createContext();
 
 class RoomProvider extends Component {
-    state = {}
+    state = {
+        rooms: [],
+        sortedRooms: [],
+        featuredRooms: [],
+        loading: true
+    }
+
+    componentDidMount() {
+        let rooms = this.formatData(items)
+        let featuredRooms = rooms.filter(room => room.featured === true);
+
+        this.setState({
+            rooms,
+            featuredRooms,
+            sortedRooms: rooms,
+            loading: false
+        })
+    }
+
+    formatData(item) {
+        let tempItems = item.map((item) => {
+            let id = item.sys.id
+            let images = item.fields.images.map((image) => image.fields.file.url)
+            let room = {...item.fields, images, id}
+
+            return room
+        })
+
+        return tempItems
+    }
+
+    getRoom = (slug) => {
+        let tempRooms = [...this.state.rooms];
+        const room = tempRooms.find(room => room.slug == slug);
+
+        return room;
+    }
 
     render() {
         return (
-            <RoomContext.Provider value="hello">
+            // Компонент Provider используется для передачи текущей
+            // UI-темы вниз по дереву. Любой компонент может использовать
+            // этот контекст и не важно, как глубоко он находится.
+            <RoomContext.Provider value={{...this.state, getRoom: this.getRoom}}>
+                {/*??*/}
                 {this.props.children}
             </RoomContext.Provider>
         );
